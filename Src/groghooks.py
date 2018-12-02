@@ -53,7 +53,7 @@ class MyHandler(BaseHTTPRequestHandler):
             query = parse_qs(query)
         try:
             if path in config.available_hooks and query:
-                sendResponse(self, 200, {}, query['hub.challenge'])
+                sendResponse(self, 200, {}, query['hub.challenge'][0])
                 return
             else:
                 send404(self, path)
