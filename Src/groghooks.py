@@ -80,6 +80,11 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self.path.lstrip('/')
+        query = {}
+        if path.find("?") > 0:
+            query = path[path.index("?")+1:]
+            path = path[0:path.index("?")]
+            query = parse_qs(query)
         # process Path
         try:
             print config.available_hooks
