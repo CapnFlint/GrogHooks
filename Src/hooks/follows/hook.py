@@ -15,10 +15,10 @@ except ImportError:
 @register_hook("follows")
 class hook_follows():
 
-    def subscribed():
+    def subscribed(self):
         pass
 
-    def process(query):
+    def process(self, query):
         qs = cgi.parse_qs(query)
         print "processing..."
         return qs['action']
