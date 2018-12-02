@@ -90,7 +90,7 @@ class MyHandler(BaseHTTPRequestHandler):
             print config.available_hooks
             print path
             if path in config.available_hooks:
-                hook = hook_register[path]
+                hook = hook_register[path]()
                 sendResponse(self, 200, {'Content-Type':'application/json'}, hook.process(query))
                 return
             else:
