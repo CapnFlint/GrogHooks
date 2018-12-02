@@ -5,6 +5,10 @@ import time
 import sys
 import logging
 
+import hooks.follows.hook as follows
+
+from hooks.hook_helper import *
+
 import config
 
 def send404(handler, path):
@@ -45,6 +49,7 @@ def handleNotification(data):
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        # get requests are subscription verifications etc only.
         path = self.path.lstrip('/')
         query = {}
         if path.find("?") > 0:
@@ -53,6 +58,16 @@ class MyHandler(BaseHTTPRequestHandler):
             query = parse_qs(query)
         try:
             if path in config.available_hooks and query:
+                if query['hub.mode'] == 'subscribe':
+                    logging.info("Subscribed: " + path)
+                    subVerify(path, query)
+                elif query['hub.mode'] == 'denied':
+                    logging.info("Subscription denied: " + path)
+                    subDenied(path, query)
+                else:
+                    # unhandled mode
+                    logging.error("Unhandled mode: " + query['hub.mode'])
+                    subDenied(path, query)
                 sendResponse(self, 200, {}, query['hub.challenge'][0])
                 return
             else:
@@ -70,17 +85,14 @@ class MyHandler(BaseHTTPRequestHandler):
             print config.available_hooks
             print path
             if path in config.available_hooks:
-                print "valid path"
-                # Current hooks: follows, status
-                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":"it works!"})
+                hook = hook_register[path]
+                sendResponse(self, 200, hook_headers[hook], hook.process(query))
                 return
             else:
-                print "not valid path"
                 send404(self, path)
                 return
         except IOError as details:
             self.send_error(404, 'IOError: ' + str(details))
-        pass
 
 class HookServer(ThreadingMixIn, HTTPServer):
     def __init__(self, port):
