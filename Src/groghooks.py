@@ -1,5 +1,6 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
+from urlparse import urlparse, parse_qs
 import time
 import sys
 import logging
@@ -45,6 +46,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.lstrip('/')
+        print self.query
         query = ""
         if path.find("?") > 0:
             query = path[path.index("?")+1:]
