@@ -43,10 +43,7 @@ def register_hook(path):
                 else:
                     return x
                 x = self.oInstance.__getattribute__(s)
-                if type(x) == type(self.__init__): # it is an instance method
-                    return time_this(x)                 # this is equivalent of just decorating the method with time_this
-                else:
-                    return x
+                return x
         hook_register[path] = NewCls
         return NewCls
     return wrap
