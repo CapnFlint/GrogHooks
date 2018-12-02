@@ -26,7 +26,7 @@ def register_hook(path):
     def wrap(hook):
         global hook_register
         print "Registering Hook: " + path
-        class NewCls(object):
+        class NewCls(hook):
             def __init__(self,*args,**kwargs):
                 self.oInstance = hook(*args,**kwargs)
             def __getattribute__(self,s):
