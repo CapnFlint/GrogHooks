@@ -14,8 +14,6 @@ except ImportError:
 
 @register_hook("follows")
 class hook_follows():
-    def __init__(*args,**kwargs):
-        pass
 
     def subscribed():
         pass
