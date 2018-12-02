@@ -53,7 +53,7 @@ class MyHandler(BaseHTTPRequestHandler):
             query = parse_qs(query)
         try:
             if path in config.available_hooks and query:
-                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":query['hub.challenge']})
+                sendResponse(self, 200, {}, hub.challenge')
                 return
             else:
                 send404(self, path)
