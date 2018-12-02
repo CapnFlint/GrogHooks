@@ -25,7 +25,7 @@ def set_headers(headers):
 def register_hook(path):
     global hook_register
     print "Registering Hook: " + path
-    class NewCls(hook):
+    class NewCls(object):
         def __init__(self,*args,**kwargs):
             self.oInstance = Cls(*args,**kwargs)
         def __getattribute__(self,s):
