@@ -44,27 +44,25 @@ def handleNotification(data):
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        '''
-        path = self.path
+        path = self.path.lstrip('/')
         query = ""
         if path.find("?") > 0:
             query = path[path.index("?")+1:]
-            path = path[0:path.index("?")].lstrip('/')
+            path = path[0:path.index("?")]
         try:
-            if path in config.available_apis:
-                api = api_register[path]
-                sendResponse(self, 200, api_headers[api], api(query))
+            if path in config.available_hooks:
+                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":"foobar"})
                 return
             else:
                 send404(self, path)
                 return
         except IOError as details:
-            self.send_error(404, 'IOError: '+str(details))'''
+            self.send_error(404, 'IOError: '+str(details))
         pass
 
 
     def do_POST(self):
-        path = self.path
+        path = self.path.lstrip('/')
         # process Path
         try:
             print config.available_hooks
