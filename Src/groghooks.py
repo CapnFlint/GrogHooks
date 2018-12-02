@@ -51,7 +51,7 @@ class MyHandler(BaseHTTPRequestHandler):
             path = path[0:path.index("?")]
         try:
             if path in config.available_hooks:
-                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":"foobar"})
+                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":query})
                 return
             else:
                 send404(self, path)
