@@ -67,7 +67,8 @@ class MyHandler(BaseHTTPRequestHandler):
         # process Path
         try:
             if path in config.available_hooks:
-                sendResponse(self, 200, headers, data)
+                # Current hooks: follows, status
+                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":"it works!"})
                 return
             else:
                 send404(self, path)
