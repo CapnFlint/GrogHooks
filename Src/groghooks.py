@@ -46,14 +46,14 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = self.path.lstrip('/')
-        print self.query
-        query = ""
+        query = {}
         if path.find("?") > 0:
             query = path[path.index("?")+1:]
             path = path[0:path.index("?")]
+            query = parse_qs(query)
         try:
-            if path in config.available_hooks:
-                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":query})
+            if path in config.available_hooks and query:
+                sendResponse(self, 200, {'Content-Type':'application/json'}, {"response":query['hub.challenge']})
                 return
             else:
                 send404(self, path)
