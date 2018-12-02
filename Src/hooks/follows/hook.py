@@ -19,9 +19,8 @@ class hook_follows():
         pass
 
     def process(self, query):
-        qs = cgi.parse_qs(query)
         print "processing..."
-        return qs['action']
+        return query['action']
         pass
 
     def get_instance(self):
