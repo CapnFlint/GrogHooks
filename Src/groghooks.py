@@ -91,7 +91,7 @@ class MyHandler(BaseHTTPRequestHandler):
             print path
             if path in config.available_hooks:
                 hook = hook_register[path]
-                sendResponse(self, 200, hook_headers[path], hook.process(query))
+                sendResponse(self, 200, {'Content-Type':'application/json'}, hook.process(query))
                 return
             else:
                 send404(self, path)
