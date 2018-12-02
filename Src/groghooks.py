@@ -7,6 +7,7 @@ import logging
 import config
 
 def send404(handler, path):
+    print "sending 404"
     sendResponse(handler, 404, {'Content-Type':'application/xml'}, "<error>Path Error: /"+path+"</error>")
     return
 
@@ -66,6 +67,8 @@ class MyHandler(BaseHTTPRequestHandler):
         path = self.path
         # process Path
         try:
+            print config.available_hooks
+            print path
             if path in config.available_hooks:
                 print "valid path"
                 # Current hooks: follows, status
