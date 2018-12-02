@@ -20,7 +20,7 @@ class hook_follows():
 
     def process(self, query):
         print "processing..."
-        return query['action']
+        return query['action'][0]
         pass
 
     def get_instance(self):
