@@ -7,7 +7,7 @@ def register_hook(path):
         print "Registering Hook: " + path
         def wrapped(query):
             return hook(query)
-        hook_register[path] = wrapped
+        hook_register[path] = wrapped()
         return wrapped
     return wrap
 
