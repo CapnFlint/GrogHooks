@@ -87,14 +87,13 @@ class MyHandler(BaseHTTPRequestHandler):
             query = parse_qs(query)
         content_len = int(self.headers.getheader('content-length', 0))
         post_body = self.rfile.read(content_len)
-        post_data = parse_qs(post_body)
         # process Path
         try:
             print config.available_hooks
             print path
             if path in config.available_hooks:
                 hook = hook_register[path]()
-                sendResponse(self, 200, {'Content-Type':'text/html'}, hook.process(post_data))
+                sendResponse(self, 200, {'Content-Type':'text/html'}, hook.process(post_body))
                 return
             else:
                 send404(self, path)
