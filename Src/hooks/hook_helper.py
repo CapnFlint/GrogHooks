@@ -4,6 +4,15 @@ import logging
 hook_register = dict()
 hook_headers = dict()
 
+has_config = False
+
+try:
+    import config
+    has_config = True
+except ImportError:
+    has_config = False
+    logging.debug("Cannot load config for the Twitch API. The API will not function.")
+
 def _register_hook(path):
     global hook_register
     def wrap(hook):
