@@ -124,6 +124,7 @@ def start_server():
 def main(argv):
     logging.basicConfig(filename=config.log_file, format=config.log_format, datefmt=config.log_date_format, level=config.log_level)
     t = Thread(target=start_server)
+    t.start()
     subscribe()
     t.join()
 
