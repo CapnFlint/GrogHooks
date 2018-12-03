@@ -85,9 +85,9 @@ class MyHandler(BaseHTTPRequestHandler):
             query = path[path.index("?")+1:]
             path = path[0:path.index("?")]
             query = parse_qs(query)
-            content_len = int(self.headers.getheader('content-length', 0))
-            post_body = self.rfile.read(content_len)
-            post_data = parse_qs(post_body)
+        content_len = int(self.headers.getheader('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_data = parse_qs(post_body)
         # process Path
         try:
             print config.available_hooks
