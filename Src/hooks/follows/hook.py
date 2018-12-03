@@ -34,10 +34,12 @@ class hook_follows():
 
     def process(self, data):
         print "processing..."
+        logging.debug("Data Received:\n" + data)
         print data
-        data = json.loads(data)
-        print data['from_id']
-        return "foobar"
+        data = json.loads(data)['data']
+        for d = data:
+            print data['from_id']
+        return "Success!"
 
     def get_instance(self):
         return self
