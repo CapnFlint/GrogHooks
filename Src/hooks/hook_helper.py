@@ -29,11 +29,11 @@ def sub_hook(path, topic):
     result = 1
     try:
         data = {
-            hub.callback : 'http://capnflint.com:9021/' + path,
-            hub.mode: 'subscribe',
-            hub.topic: topic,
-            hub.lease_seconds: 0,
-            hub.secret: 'secret'
+            'hub.callback': 'http://capnflint.com:9021/' + path,
+            'hub.mode': 'subscribe',
+            'hub.topic': topic,
+            'hub.lease_seconds': 0,
+            'hub.secret': 'secret'
         }
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, data=data)
