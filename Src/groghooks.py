@@ -1,6 +1,7 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from SocketServer import ThreadingMixIn
 from urlparse import urlparse, parse_qs
+from threading import Thread
 import time
 import sys
 import logging
@@ -28,7 +29,10 @@ def sendResponse(handler, code, headers, data):
 def subscribe():
     # subscribe to all the topics I want. Can also be used to resubscribe.
     # Must resubscribe at least every 10 days. Probably do it weekly (7 days)
-    pass
+    logging.debug("Subscribing!!!")
+    for h in hook_register:
+        hook = hook_register[h]()
+        hook.subscribe()
 
 def subVerify(handler, token):
     # respond 200 with verification token
@@ -44,12 +48,15 @@ def handleNotification(data):
     # check unique ID so we don't double notifications
     # figure out way to track notification ID's (max number?)
     # send 200 response!
+    # verification done using X-Hub-Signature header
+    # sha256(secret, notification_bytes)
     pass
 
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # get requests are subscription verifications etc only.
+        logging.debug("GET request!")
         path = self.path.lstrip('/')
         query = {}
         if path.find("?") > 0:
@@ -105,9 +112,7 @@ class HookServer(ThreadingMixIn, HTTPServer):
     def __init__(self, port):
         HTTPServer.__init__(self, ('',port), MyHandler)
 
-def main(argv):
-    logging.basicConfig(filename=config.log_file, format=config.log_format, datefmt=config.log_date_format, level=config.log_level)
-
+def start_server():
     try:
         server = HookServer(config.port)
         logging.info('Started Webhook Server on port: '+str(config.port))
@@ -115,6 +120,13 @@ def main(argv):
 
     except KeyboardInterrupt:
         logging.info('^C received, shutting down API server!')
+
+def main(argv):
+    logging.basicConfig(filename=config.log_file, format=config.log_format, datefmt=config.log_date_format, level=config.log_level)
+    t = Thread(target=start_server)
+    subscribe()
+    t.join()
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

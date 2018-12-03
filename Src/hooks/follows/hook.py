@@ -29,16 +29,17 @@ except ImportError:
 @register_hook("follows")
 class hook_follows():
 
-    def subscribed(self):
-        pass
+    def subscribe(self):
+        logging.debug("Subscription called for 'Follows' hook")
+        sub_hook(config.callback, config.topic)
+        # subscribe for things!
 
     def process(self, data):
-        print "processing..."
         logging.debug("Data Received:\n" + data)
-        print data
         data = json.loads(data)['data']
         for d in data:
-            print d['from_id']
+            follow_id = d['from_id']
+            follow_name = d['from_name']
         return "Success!"
 
     def get_instance(self):

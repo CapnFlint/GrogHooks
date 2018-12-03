@@ -1,3 +1,5 @@
+import requests
+
 hook_register = dict()
 hook_headers = dict()
 
@@ -21,6 +23,25 @@ def set_headers(headers):
         hook_headers[func] = headers
         return wrapped
     return wrap
+
+def sub_hook(path, topic):
+    url = "https://api.twitch.tv/helix/webhooks/hub"
+    result = 1
+    try:
+        data = {
+            hub.callback : 'http://capnflint.com:9021/' + path,
+            hub.mode: 'subscribe',
+            hub.topic: topic,
+            hub.lease_seconds: 0,
+            hub.secret: 'secret'
+        }
+        logging.debug("Sending subscription request: " + str(data))
+        r = requests.post(url, data=data)
+
+
+    except requests.exceptions.RequestException:
+        return None
+    return result
 
 def register_hook(path):
     def wrap(hook):
