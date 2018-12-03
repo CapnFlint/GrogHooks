@@ -1,4 +1,5 @@
 import requests
+import logging
 
 hook_register = dict()
 hook_headers = dict()
