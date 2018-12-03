@@ -6,13 +6,6 @@ hook_headers = dict()
 
 has_config = False
 
-try:
-    import config
-    has_config = True
-except ImportError:
-    has_config = False
-    logging.debug("Cannot load config for the Twitch API. The API will not function.")
-
 def _register_hook(path):
     global hook_register
     def wrap(hook):
@@ -34,15 +27,15 @@ def set_headers(headers):
         return wrapped
     return wrap
 
-def sub_hook(path, topic):
+def sub_hook(config):
     print "sub_hook called!"
     url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=config.client_id)
     result = 1
     try:
         data = {
-            'hub.callback': 'http://capnflint.com:9021/' + path,
+            'hub.callback': 'http://capnflint.com:9021/' + config.path,
             'hub.mode': 'subscribe',
-            'hub.topic': topic,
+            'hub.topic': config.topic,
             'hub.lease_seconds': 0,
             'hub.secret': 'secret'
         }
