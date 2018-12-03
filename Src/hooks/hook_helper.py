@@ -40,6 +40,8 @@ def sub_hook(path, topic):
         print data
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, data=data)
+        print r.status_code
+        print r.headers
 
 
     except requests.exceptions.RequestException:
