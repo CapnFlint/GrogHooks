@@ -38,7 +38,7 @@ class hook_follows():
         print data
         data = json.loads(data)['data']
         for d in data:
-            print data['from_id']
+            print d['from_id']
         return "Success!"
 
     def get_instance(self):
