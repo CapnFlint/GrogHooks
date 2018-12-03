@@ -29,6 +29,7 @@ def sendResponse(handler, code, headers, data):
 def subscribe():
     # subscribe to all the topics I want. Can also be used to resubscribe.
     # Must resubscribe at least every 10 days. Probably do it weekly (7 days)
+    print "Subscribing!"
     logging.debug("Subscribing!!!")
     for h in hook_register:
         hook = hook_register[h]()
@@ -123,10 +124,14 @@ def start_server():
 
 def main(argv):
     logging.basicConfig(filename=config.log_file, format=config.log_format, datefmt=config.log_date_format, level=config.log_level)
-    t = Thread(target=start_server)
-    t.start()
-    subscribe()
-    t.join()
+    try:
+        t = Thread(target=start_server)
+        t.setDaemon(True)
+        t.start()
+        subscribe()
+        t.join()
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
