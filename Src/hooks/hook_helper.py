@@ -27,7 +27,7 @@ def set_headers(headers):
 
 def sub_hook(path, topic):
     print "sub_hook called!"
-    url = "https://api.twitch.tv/helix/webhooks/hub"
+    url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=config.client_id)
     result = 1
     try:
         data = {
