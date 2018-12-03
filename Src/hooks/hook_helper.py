@@ -26,6 +26,7 @@ def set_headers(headers):
     return wrap
 
 def sub_hook(path, topic):
+    print "sub_hook called!"
     url = "https://api.twitch.tv/helix/webhooks/hub"
     result = 1
     try:
@@ -36,6 +37,7 @@ def sub_hook(path, topic):
             'hub.lease_seconds': 0,
             'hub.secret': 'secret'
         }
+        print data
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, data=data)
 

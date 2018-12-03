@@ -30,6 +30,7 @@ except ImportError:
 class hook_follows():
 
     def subscribe(self):
+        print "Subscribing Follows..."
         logging.debug("Subscription called for 'Follows' hook")
         sub_hook(config.callback, config.topic)
         # subscribe for things!
