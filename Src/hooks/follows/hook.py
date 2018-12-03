@@ -37,7 +37,7 @@ class hook_follows():
         logging.debug("Data Received:\n" + data)
         print data
         data = json.loads(data)['data']
-        for d = data:
+        for d in data:
             print data['from_id']
         return "Success!"
 
