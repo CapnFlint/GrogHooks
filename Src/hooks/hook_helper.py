@@ -40,8 +40,8 @@ def sub_hook(config):
             'hub.secret': 'secret'
         }
         headers = {
-            'Client-ID', config.client_id,
-            'Authorization', 'OAuth ' + config.oauth_key
+            'Client-ID': config.client_id,
+            'Authorization': 'OAuth ' + config.oauth_key
         }
         print data
         logging.debug("Sending subscription request: " + str(data))
