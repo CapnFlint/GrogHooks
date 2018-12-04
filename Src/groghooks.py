@@ -64,7 +64,7 @@ class MyHandler(BaseHTTPRequestHandler):
         logging.debug("GET request!")
         path = self.path.lstrip('/')
         query = {}
-        print self.headers[0]
+        print self.headers['user-agent']
         if path.find("?") > 0:
             query = path[path.index("?")+1:]
             path = path[0:path.index("?")]
