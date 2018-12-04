@@ -62,7 +62,8 @@ def handleNotification(handler):
     content_len = int(handler.headers.getheader('content-length', 0))
     post_body = handler.rfile.read(content_len)
     hash = handler.headers.getheader('X-Hub-Signature')
-    check = hashlib.sha256('secret' + post_body).hexdigest()
+    check = "sha256=" + hashlib.sha256('secret' + post_body).hexdigest()
+    print "Data: [" + post_body + "]"
     print "Theirs: [" + hash + "]"
     print "Ours: [" + check + "]"
     if hash == check:
