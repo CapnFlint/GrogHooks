@@ -66,15 +66,15 @@ class MyHandler(BaseHTTPRequestHandler):
             query = parse_qs(query)
         try:
             if path in config.available_hooks and query:
-                if query['hub.mode'] == 'subscribe':
+                if query['hub.mode'][0] == 'subscribe':
                     logging.info("Subscribed: " + path)
                     subVerify(path, query)
-                elif query['hub.mode'] == 'denied':
+                elif query['hub.mode'][0] == 'denied':
                     logging.info("Subscription denied: " + path)
                     subDenied(path, query)
                 else:
                     # unhandled mode
-                    logging.error("Unhandled mode: " + query['hub.mode'])
+                    logging.error("Unhandled mode: " + query['hub.mode'][0])
                     subDenied(path, query)
                 sendResponse(self, 200, {}, query['hub.challenge'][0])
                 return
