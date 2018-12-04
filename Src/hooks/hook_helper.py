@@ -82,7 +82,7 @@ def register_hook(path):
 
 ''' Websocket handler '''
 
-def _send_message(handler, data):
+def send_message(handler, data):
     try:
         message = {}
         message['handler'] = handler

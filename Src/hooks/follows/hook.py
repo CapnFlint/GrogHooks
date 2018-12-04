@@ -58,4 +58,4 @@ class hook_follows():
         data = {}
         data['priority'] = 3
         data['text'] = "[HL]{0}[/HL] has boarded the ship! Welcome!".format(name)
-        _send_message("alert", data)
+        send_message("alert", data)
