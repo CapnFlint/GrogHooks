@@ -29,7 +29,7 @@ except ImportError:
 @register_hook("follows")
 class hook_follows():
 
-    def __init__(self, secret):
+    def set_secret(self, secret):
         self.secret = secret
         self.send_alert("TEST_USER")
 

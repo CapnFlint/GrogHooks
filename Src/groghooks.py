@@ -75,7 +75,8 @@ class MyHandler(BaseHTTPRequestHandler):
 
         if hmac.compare_digest(hash, check):
             if self.check_id(notification_id):
-                hook = hook_register[path](config.secret)
+                hook = hook_register[path]()
+                hook.set_secret(config.secret)
                 resp = hook.process(data)
         else:
             logging.warning("Bad request, someone is being naughty!")
@@ -147,7 +148,8 @@ def subscribe():
     # subscribe to all the topics I want. Can also be used to resubscribe.
     # Must resubscribe at least every 10 days. Probably do it weekly (7 days)
     for h in hook_register:
-        hook = hook_register[h](config.secret)
+        hook = hook_register[h]()
+        hook.set_secret(config.secret)
         hook.subscribe()
 
 def main(argv):
