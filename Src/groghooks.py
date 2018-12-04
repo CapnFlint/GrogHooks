@@ -45,13 +45,16 @@ def subDenied(handler, query):
     # send 200 response
     pass
 
-def handleNotification(data):
+def handleNotification(path, data):
     # verify and handle notifications
     # check unique ID so we don't double notifications
     # figure out way to track notification ID's (max number?)
     # send 200 response!
     # verification done using X-Hub-Signature header
     # sha256(secret, notification_bytes)
+
+    hook = hook_register[path]()
+    return hook.process(data)
     pass
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -61,6 +64,7 @@ class MyHandler(BaseHTTPRequestHandler):
         logging.debug("GET request!")
         path = self.path.lstrip('/')
         query = {}
+        print self.headers
         if path.find("?") > 0:
             query = path[path.index("?")+1:]
             path = path[0:path.index("?")]
@@ -100,8 +104,8 @@ class MyHandler(BaseHTTPRequestHandler):
             print config.available_hooks
             print path
             if path in config.available_hooks:
-                hook = hook_register[path]()
-                sendResponse(self, 200, {'Content-Type':'text/html'}, hook.process(post_body))
+                resp = handleNotification(path, post_body)
+                sendResponse(self, 200, {'Content-Type':'text/html'}, resp)
                 return
             else:
                 send404(self, path)
