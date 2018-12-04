@@ -36,7 +36,7 @@ def sub_hook(config):
             'hub.callback': 'http://capnflint.com:9021/' + config.callback,
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
-            'hub.lease_seconds': 0,
+            'hub.lease_seconds': 864000,
             'hub.secret': 'secret'
         }
         headers = {
