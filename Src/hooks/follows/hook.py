@@ -41,6 +41,8 @@ class hook_follows():
         for d in data:
             follow_id = d['from_id']
             follow_name = d['from_name']
+            # send follower alert
+            # notify GrogBot of new follower
         return "Success!"
 
     def get_instance(self):
