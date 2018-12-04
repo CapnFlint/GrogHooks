@@ -84,7 +84,7 @@ def register_hook(path):
 
 def send_message(handler, data):
     try:
-        print "Trying to send an alert message: " + ', '.join([handler, data])
+        print "Trying to send an alert message: " + ', '.join([handler, data['text']])
         message = {}
         message['handler'] = handler
         message['data'] = data
