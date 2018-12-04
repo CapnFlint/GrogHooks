@@ -45,7 +45,7 @@ def sub_hook(config):
         }
         print data
         logging.debug("Sending subscription request: " + str(data))
-        r = requests.post(url, data=data)
+        r = requests.post(url, headers=headers, data=data)
         print r.status_code
         print r.headers
         print r.text
