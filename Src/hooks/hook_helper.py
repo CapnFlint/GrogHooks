@@ -84,6 +84,7 @@ def register_hook(path):
 
 def send_message(handler, data):
     try:
+        print "Trying to send an alert message: " + ', '.join([handler, data])
         message = {}
         message['handler'] = handler
         message['data'] = data
@@ -95,4 +96,5 @@ def send_message(handler, data):
         ws.recv()
         ws.close()
     except:
+        print "Websocket borkeded"
         logging.error("Websocket not available...")
