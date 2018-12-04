@@ -92,7 +92,7 @@ def send_message(handler, data):
         message['data'] = data
         ws = create_connection("ws://capnflint.com:9001")
         #logging.debug("Sending Auth: " + config['websocket']['secret'])
-        ws.send("AUTH:" + config['websocket']['secret'])
+        ws.send("AUTH:" + config.websocket_secret)
         #logging.debug("Sending Message: " + json.dumps(message))
         ws.send(json.dumps(message))
         ws.recv()
