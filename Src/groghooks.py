@@ -35,12 +35,12 @@ def subscribe():
         hook = hook_register[h]()
         hook.subscribe()
 
-def subVerify(query):
+def subVerify(handler, query):
     # respond 200 with verification token
     logging.info("Subscription Success!")
-    sendResponse(self, 200, {}, query['hub.challenge'][0])
+    sendResponse(handler, 200, {}, query['hub.challenge'][0])
 
-def subDenied(query):
+def subDenied(handler, query):
     # figure out why. Not authed or max subscriptions...
     # send 200 response
     pass
@@ -69,10 +69,10 @@ class MyHandler(BaseHTTPRequestHandler):
             if path in config.available_hooks and query:
                 if query['hub.mode'][0] == 'subscribe':
                     logging.info("Subscribed: " + path)
-                    subVerify(query)
+                    subVerify(self, query)
                 elif query['hub.mode'][0] == 'denied':
                     logging.info("Subscription denied: " + path)
-                    subDenied(query)
+                    subDenied(self, query)
                 else:
                     # unhandled mode
                     logging.error("Unhandled mode: " + query['hub.mode'][0])
