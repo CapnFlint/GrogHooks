@@ -33,7 +33,7 @@ def sub_hook(config):
     result = 1
     try:
         data = {
-            'hub.callback': 'http://capnflint.com:9021/' + config.path,
+            'hub.callback': 'http://capnflint.com:9021/' + config.callback,
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 0,
