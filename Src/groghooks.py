@@ -37,7 +37,7 @@ def subscribe():
 
 def subVerify(query):
     # respond 200 with verification token
-    logging.info(handler + "Subscription Success!")
+    logging.info("Subscription Success!")
     sendResponse(self, 200, {}, query['hub.challenge'][0])
 
 def subDenied(query):
