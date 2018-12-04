@@ -32,7 +32,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def sendResponse(self, code, headers, data):
         self.send_response(code)
-        items = self.items()
+        items = headers.items()
         for item in items:
             self.send_header(item[0], item[1])
         self.end_headers()
