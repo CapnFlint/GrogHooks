@@ -48,6 +48,7 @@ def sub_hook(config):
         r = requests.post(url, data=data)
         print r.status_code
         print r.headers
+        print r.text
 
 
     except requests.exceptions.RequestException:
