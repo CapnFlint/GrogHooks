@@ -6,6 +6,7 @@ import time
 import sys
 import logging
 import hashlib
+import hmac
 
 import hooks.follows.hook as follows
 
@@ -62,11 +63,12 @@ def handleNotification(handler):
     content_len = int(handler.headers.getheader('content-length', 0))
     post_body = handler.rfile.read(content_len)
     hash = handler.headers.getheader('X-Hub-Signature')
-    check = "sha256=" + hashlib.sha256('secret' + post_body).hexdigest()
+    check = "sha256=" + hmac.new('secret', post_body, hashlib.sha256).hexdigest()
     print "Data: [" + post_body + "]"
     print "Theirs: [" + hash + "]"
     print "Ours: [" + check + "]"
-    if hash == check:
+    if hmac.compare_digest(hash, check):
+        print "SUCCESS!"
         hook = hook_register[path]()
         return hook.process(data)
     else:
