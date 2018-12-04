@@ -31,68 +31,62 @@ def sendResponse(handler, code, headers, data):
 def subscribe():
     # subscribe to all the topics I want. Can also be used to resubscribe.
     # Must resubscribe at least every 10 days. Probably do it weekly (7 days)
-    print "Subscribing!"
-    logging.debug("Subscribing!!!")
     for h in hook_register:
         hook = hook_register[h]()
         hook.subscribe()
 
 def subVerify(handler, query):
     # respond 200 with verification token
-    logging.info("Subscription Success!")
+    logging.info("Subscription Success: " + self.path)
     sendResponse(handler, 200, {}, query['hub.challenge'][0])
 
 def subDenied(handler, query):
     # figure out why. Not authed or max subscriptions...
     # send 200 response
+    sendResponse(handler, 200, {}, "")
     pass
 
 def handleNotification(handler):
     # verify and handle notifications
     # check unique ID so we don't double notifications
     # figure out way to track notification ID's (max number?)
-    # send 200 response!
-    # verification done using X-Hub-Signature header
-    # sha256(secret, notification_bytes)
+
     path = handler.path.lstrip('/')
     query = {}
-    if path.find("?") > 0:
+    if "?" in path:
         query = path[path.index("?")+1:]
         path = path[0:path.index("?")]
         query = parse_qs(query)
+
     content_len = int(handler.headers.getheader('content-length', 0))
-    post_body = handler.rfile.read(content_len)
+    data = handler.rfile.read(content_len)
+
     hash = handler.headers.getheader('X-Hub-Signature')
-    check = "sha256=" + hmac.new('secret', post_body, hashlib.sha256).hexdigest()
-    print "Data: [" + post_body + "]"
-    print "Theirs: [" + hash + "]"
-    print "Ours: [" + check + "]"
+    check = "sha256=" + hmac.new('secret', data, hashlib.sha256).hexdigest()
+
     if hmac.compare_digest(hash, check):
-        print "SUCCESS!"
         hook = hook_register[path]()
         return hook.process(data)
     else:
-        print "FAILFISH!"
+        logging.warning("Bad request, someone is being naughty!")
+        pass
 
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         # get requests are subscription verifications etc only.
-        logging.debug("GET request!")
+        # Move all this out into the subVerify function
         path = self.path.lstrip('/')
         query = {}
-        print self.headers['user-agent']
-        if path.find("?") > 0:
+        if "?" in path:
             query = path[path.index("?")+1:]
             path = path[0:path.index("?")]
             query = parse_qs(query)
         try:
             if path in config.available_hooks and query:
                 if query['hub.mode'][0] == 'subscribe':
-                    logging.info("Subscribed: " + path)
                     subVerify(self, query)
                 elif query['hub.mode'][0] == 'denied':
-                    logging.info("Subscription denied: " + path)
                     subDenied(self, query)
                 else:
                     # unhandled mode
@@ -108,8 +102,13 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
+        print self.headers
+        print self.path
+
         path = self.path.lstrip('/')
-        # process Path
+        if "?" in path:
+            path = path[0:path.index("?")]
+
         try:
             if path in config.available_hooks:
                 resp = handleNotification(self)
