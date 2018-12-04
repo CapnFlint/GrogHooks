@@ -5,6 +5,7 @@ from threading import Thread
 import time
 import sys
 import logging
+import hashlib
 
 import hooks.follows.hook as follows
 
@@ -45,17 +46,30 @@ def subDenied(handler, query):
     # send 200 response
     pass
 
-def handleNotification(path, data):
+def handleNotification(handler):
     # verify and handle notifications
     # check unique ID so we don't double notifications
     # figure out way to track notification ID's (max number?)
     # send 200 response!
     # verification done using X-Hub-Signature header
     # sha256(secret, notification_bytes)
-
-    hook = hook_register[path]()
-    return hook.process(data)
-    pass
+    path = handler.path.lstrip('/')
+    query = {}
+    if path.find("?") > 0:
+        query = path[path.index("?")+1:]
+        path = path[0:path.index("?")]
+        query = parse_qs(query)
+    content_len = int(handler.headers.getheader('content-length', 0))
+    post_body = self.rfile.read(content_len)
+    hash = handler.headers.getheader('X-Hub-Signature')
+    check = hashlib.sha256(post_body).hexdigest()
+    print "Theirs: [" + hash + "]"
+    print "Ours: [" + check + "]"
+    if hash == check:
+        hook = hook_register[path]()
+        return hook.process(data)
+    else:
+        print "FAILFISH!"
 
 class MyHandler(BaseHTTPRequestHandler):
 
@@ -91,20 +105,13 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        path = self.path.lstrip('/')
-        query = {}
-        if path.find("?") > 0:
-            query = path[path.index("?")+1:]
-            path = path[0:path.index("?")]
-            query = parse_qs(query)
-        content_len = int(self.headers.getheader('content-length', 0))
-        post_body = self.rfile.read(content_len)
+
         # process Path
         try:
             print config.available_hooks
             print path
             if path in config.available_hooks:
-                resp = handleNotification(path, post_body)
+                resp = handleNotification(self)
                 sendResponse(self, 200, {'Content-Type':'text/html'}, resp)
                 return
             else:
