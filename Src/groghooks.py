@@ -60,7 +60,7 @@ def handleNotification(handler):
         path = path[0:path.index("?")]
         query = parse_qs(query)
     content_len = int(handler.headers.getheader('content-length', 0))
-    post_body = self.rfile.read(content_len)
+    post_body = handler.rfile.read(content_len)
     hash = handler.headers.getheader('X-Hub-Signature')
     check = hashlib.sha256('secret' + post_body).hexdigest()
     print "Theirs: [" + hash + "]"
