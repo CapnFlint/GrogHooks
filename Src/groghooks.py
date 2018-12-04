@@ -67,7 +67,7 @@ class MyHandler(BaseHTTPRequestHandler):
         data = self.rfile.read(content_len)
 
         hash = self.headers.getheader('X-Hub-Signature')
-        check = "sha256=" + hmac.new('secret', data, hashlib.sha256).hexdigest()
+        check = "sha256=" + hmac.new(config.secret, data, hashlib.sha256).hexdigest()
 
         notification_id = self.headers.getheader('Twitch-Notification-Id')
 
@@ -75,7 +75,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
         if hmac.compare_digest(hash, check):
             if self.check_id(notification_id):
-                hook = hook_register[path]()
+                hook = hook_register[path](config.secret)
                 resp = hook.process(data)
         else:
             logging.warning("Bad request, someone is being naughty!")
@@ -147,7 +147,7 @@ def subscribe():
     # subscribe to all the topics I want. Can also be used to resubscribe.
     # Must resubscribe at least every 10 days. Probably do it weekly (7 days)
     for h in hook_register:
-        hook = hook_register[h]()
+        hook = hook_register[h](config.secret)
         hook.subscribe()
 
 def main(argv):
