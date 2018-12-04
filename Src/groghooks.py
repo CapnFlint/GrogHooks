@@ -105,7 +105,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        path = handler.path.lstrip('/')
+        path = self.path.lstrip('/')
         # process Path
         try:
             if path in config.available_hooks:
