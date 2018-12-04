@@ -2,6 +2,8 @@ import requests
 import logging
 import config
 
+from websocket import create_connection
+
 hook_register = dict()
 hook_headers = dict()
 
