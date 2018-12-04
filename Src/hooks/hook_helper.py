@@ -1,10 +1,9 @@
 import requests
 import logging
+import config
 
 hook_register = dict()
 hook_headers = dict()
-
-has_config = False
 
 def _register_hook(path):
     global hook_register
@@ -27,7 +26,7 @@ def set_headers(headers):
         return wrapped
     return wrap
 
-def sub_hook(config):
+def sub_hook(config, secret):
     print "sub_hook called!"
     url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=config.client_id)
     result = 1
@@ -37,7 +36,7 @@ def sub_hook(config):
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 864000,
-            'hub.secret': 'secret'
+            'hub.secret': secret
         }
         headers = {
             'Client-ID': config.client_id,
@@ -80,3 +79,20 @@ def register_hook(path):
         hook_register[path] = NewCls
         return NewCls
     return wrap
+
+''' Websocket handler '''
+
+def _send_message(handler, data):
+    try:
+        message = {}
+        message['handler'] = handler
+        message['data'] = data
+        ws = create_connection("ws://capnflint.com:9001")
+        #logging.debug("Sending Auth: " + config['websocket']['secret'])
+        ws.send("AUTH:" + config['websocket']['secret'])
+        #logging.debug("Sending Message: " + json.dumps(message))
+        ws.send(json.dumps(message))
+        ws.recv()
+        ws.close()
+    except:
+        logging.error("Websocket not available...")

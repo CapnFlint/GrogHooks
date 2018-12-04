@@ -22,7 +22,6 @@ class MyHandler(BaseHTTPRequestHandler):
         global seen_IDs
 
         if not id in seen_IDs:
-            print "New ID Seen!!!"
             seen_IDs.append(id)
             if len(seen_IDs) > 10:
                 seen_IDs.pop(0)

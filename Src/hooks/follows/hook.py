@@ -29,10 +29,14 @@ except ImportError:
 @register_hook("follows")
 class hook_follows():
 
+    def __init__(self, secret):
+        self.secret = secret
+        self.send_alert("TEST_USER")
+
     def subscribe(self):
         print "Subscribing Follows..."
         logging.debug("Subscription called for 'Follows' hook")
-        sub_hook(config)
+        sub_hook(config, self.secret)
         # subscribe for things!
 
     def process(self, data):
@@ -43,16 +47,15 @@ class hook_follows():
             follow_name = d['from_name']
             # send follower alert
             # notify GrogBot of new follower
+            print "New Follower: " + follow_name
+            self.send_alert(follow_name)
         return "Success!"
 
     def get_instance(self):
         return self
 
-
-
-def hook_follows(query):
-    global has_config
-    if not has_config:
-        return '{"error":"No configuration loaded for Follows Hook"}'
-    if query == "":
-        return '{"error":"Empty query"}'
+    def send_alert(self, name):
+        data = {}
+        data['priority'] = 3
+        data['text'] = "[HL]{0}[/HL] has boarded the ship! Welcome!".format(name)
+        _send_message("alert", data)
