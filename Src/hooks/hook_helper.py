@@ -39,6 +39,10 @@ def sub_hook(config):
             'hub.lease_seconds': 0,
             'hub.secret': 'secret'
         }
+        headers = {
+            'Client-ID', config.client_id,
+            'Authorization', 'OAuth ' + config.oauth_key
+        }
         print data
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, data=data)
