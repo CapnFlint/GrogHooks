@@ -95,6 +95,7 @@ def send_message(handler, data):
         ws.send(json.dumps(message))
         ws.recv()
         ws.close()
-    except:
+    except Exception as e:
         print "Websocket borkeded"
+        print e
         logging.error("Websocket not available...")
