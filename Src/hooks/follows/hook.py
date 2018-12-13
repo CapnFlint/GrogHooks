@@ -31,10 +31,8 @@ class hook_follows():
 
     def set_secret(self, secret):
         self.secret = secret
-        self.send_alert("TEST_USER")
 
     def subscribe(self):
-        print "Subscribing Follows..."
         logging.debug("Subscription called for 'Follows' hook")
         sub_hook(config, self.secret)
         # subscribe for things!

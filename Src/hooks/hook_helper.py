@@ -30,7 +30,6 @@ def set_headers(headers):
     return wrap
 
 def sub_hook(config, secret):
-    print "sub_hook called!"
     url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=config.client_id)
     result = 1
     try:
@@ -45,7 +44,6 @@ def sub_hook(config, secret):
             'Client-ID': config.client_id,
             'Authorization': 'OAuth ' + config.oauth_key
         }
-        print data
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, headers=headers, data=data)
         print r.status_code
@@ -99,6 +97,6 @@ def send_message(handler, data):
         ws.recv()
         ws.close()
     except Exception as e:
-        print "Websocket borkeded"
+        print "Websocket failed: "
         print e
         logging.error("Websocket not available...")
