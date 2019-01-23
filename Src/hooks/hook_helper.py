@@ -1,6 +1,6 @@
 import requests
 import logging
-from .. import config
+import config
 import json
 
 from websocket import create_connection
