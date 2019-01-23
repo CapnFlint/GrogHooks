@@ -1,3 +1,4 @@
+from ... import config
 
 topic = "<topic URL>"
 callback = "<Webhook Path>"
