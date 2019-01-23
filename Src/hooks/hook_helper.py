@@ -2,7 +2,7 @@ import requests
 import logging
 import config
 import json
-import ..config as server_config
+from .. import config as server_config
 
 from websocket import create_connection
 
