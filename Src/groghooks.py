@@ -12,7 +12,7 @@ import hooks.follows.hook as follows
 
 from hooks.hook_helper import *
 
-import config
+import server_config as config
 
 seen_IDs = []
 

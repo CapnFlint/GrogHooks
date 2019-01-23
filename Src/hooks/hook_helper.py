@@ -1,8 +1,8 @@
 import requests
 import logging
-import config
+import hook_config
 import json
-from . import config as server_config
+import server_config
 
 from websocket import create_connection
 
@@ -31,19 +31,19 @@ def set_headers(headers):
     return wrap
 
 def sub_hook(config, secret):
-    url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=config.client_id)
+    url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=hook_config.client_id)
     result = 1
     try:
         data = {
-            'hub.callback': '%s:%s/%s' % (server_config.host, server_config.port, config.callback),
+            'hub.callback': '%s:%s/%s' % (server_config.host, server_config.port, hook_config.callback),
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 864000,
             'hub.secret': secret
         }
         headers = {
-            'Client-ID': config.client_id,
-            'Authorization': 'OAuth ' + config.oauth_key
+            'Client-ID': hook_config.client_id,
+            'Authorization': 'OAuth ' + hook_config.oauth_key
         }
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, headers=headers, data=data)
@@ -89,7 +89,7 @@ def send_message(handler, data):
         message = {}
         message['handler'] = handler
         message['data'] = data
-        ws = create_connection(config.ws_server)
+        ws = create_connection(server_config.ws_server)
         #logging.debug("Sending Auth: " + config['websocket']['secret'])
         ws.send("AUTH:" + server_config.websocket_secret)
         #logging.debug("Sending Message: " + json.dumps(message))

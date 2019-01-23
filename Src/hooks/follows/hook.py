@@ -7,7 +7,7 @@ from ..hook_helper import *
 has_config = False
 
 try:
-    import config
+    import hook_config
     has_config = True
 except ImportError:
     has_config = False
