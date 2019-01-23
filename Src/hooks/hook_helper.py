@@ -2,6 +2,7 @@ import requests
 import logging
 import config
 import json
+import ..config as server_config
 
 from websocket import create_connection
 
@@ -34,7 +35,7 @@ def sub_hook(config, secret):
     result = 1
     try:
         data = {
-            'hub.callback': '%s:%s/%s' % (config.host, config.port, config.callback),
+            'hub.callback': '%s:%s/%s' % (server_config.host, server_config.port, config.callback),
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 864000,
@@ -90,7 +91,7 @@ def send_message(handler, data):
         message['data'] = data
         ws = create_connection(config.ws_server)
         #logging.debug("Sending Auth: " + config['websocket']['secret'])
-        ws.send("AUTH:" + config.websocket_secret)
+        ws.send("AUTH:" + server_config.websocket_secret)
         #logging.debug("Sending Message: " + json.dumps(message))
         ws.send(json.dumps(message))
         ws.recv()
