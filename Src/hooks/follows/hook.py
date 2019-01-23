@@ -7,7 +7,7 @@ from ..hook_helper import *
 has_config = False
 
 try:
-    import hook_config
+    import config
     has_config = True
 except ImportError:
     has_config = False
@@ -34,7 +34,7 @@ class hook_follows():
 
     def subscribe(self):
         logging.debug("Subscription called for 'Follows' hook")
-        sub_hook(config, self.secret)
+        sub_hook(config, self.secret, config.callback, config.client_id, config.oauth_key)
         # subscribe for things!
 
     def process(self, data):

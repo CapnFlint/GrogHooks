@@ -1,6 +1,5 @@
 import requests
 import logging
-import hook_config
 import json
 import server_config
 
@@ -30,20 +29,20 @@ def set_headers(headers):
         return wrapped
     return wrap
 
-def sub_hook(config, secret):
-    url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=hook_config.client_id)
+def sub_hook(config, secret, callback, client_id, oauth_key):
+    url = "https://api.twitch.tv/helix/webhooks/hub?client_id={client_id}".format(client_id=client_id)
     result = 1
     try:
         data = {
-            'hub.callback': '%s:%s/%s' % (server_config.host, server_config.port, hook_config.callback),
+            'hub.callback': '%s:%s/%s' % (server_config.host, server_config.port, callback),
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 864000,
             'hub.secret': secret
         }
         headers = {
-            'Client-ID': hook_config.client_id,
-            'Authorization': 'OAuth ' + hook_config.oauth_key
+            'Client-ID': client_id,
+            'Authorization': 'OAuth ' + oauth_key
         }
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, headers=headers, data=data)
