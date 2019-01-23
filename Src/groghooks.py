@@ -19,6 +19,7 @@ seen_IDs = []
 class MyHandler(BaseHTTPRequestHandler):
 
     def check_id(self, id):
+        # check_id: make sure we don't process the same message twice
         global seen_IDs
 
         if not id in seen_IDs:
@@ -30,6 +31,7 @@ class MyHandler(BaseHTTPRequestHandler):
             return False
 
     def sendResponse(self, code, headers, data):
+        # Constructs and sends response message
         self.send_response(code)
         items = headers.items()
         for item in items:
@@ -38,7 +40,8 @@ class MyHandler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def send404(self, path):
-        print "sending 404"
+        #TODO: add more debug information here. What were they requesting?
+        logging.info("Sending 404")
         self.sendResponse(404, {'Content-Type':'application/xml'}, "<error>Path Error: /"+path+"</error>")
 
     def subVerify(self, query):

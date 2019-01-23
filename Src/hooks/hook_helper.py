@@ -34,7 +34,7 @@ def sub_hook(config, secret):
     result = 1
     try:
         data = {
-            'hub.callback': 'http://capnflint.com:9021/' + config.callback,
+            'hub.callback': '%s:%s/%s' % (config.host, config.port, config.callback),
             'hub.mode': 'subscribe',
             'hub.topic': config.topic,
             'hub.lease_seconds': 864000,
@@ -46,9 +46,9 @@ def sub_hook(config, secret):
         }
         logging.debug("Sending subscription request: " + str(data))
         r = requests.post(url, headers=headers, data=data)
-        print r.status_code
-        print r.headers
-        print r.text
+        logging.debug(r.status_code)
+        logging.debug(r.headers)
+        logging.debug(r.text)
 
 
     except requests.exceptions.RequestException:
@@ -58,16 +58,15 @@ def sub_hook(config, secret):
 def register_hook(path):
     def wrap(hook):
         global hook_register
-        print "Registering Hook: " + path
+        logging.info("Registering Hook: " + path)
         class NewCls(hook):
             def __init__(self,*args,**kwargs):
                 self.oInstance = hook(*args,**kwargs)
             def __getattribute__(self,s):
                 """
-                this is called whenever any attribute of a NewCls object is accessed. This function first tries to
+                This is called whenever any attribute of a NewCls object is accessed. This function first tries to
                 get the attribute off NewCls. If it fails then it tries to fetch the attribute from self.oInstance (an
-                instance of the decorated class). If it manages to fetch the attribute from self.oInstance, and
-                the attribute is an instance method then `time_this` is applied.
+                instance of the decorated class).
                 """
                 try:
                     x = super(NewCls,self).__getattribute__(s)
@@ -89,7 +88,7 @@ def send_message(handler, data):
         message = {}
         message['handler'] = handler
         message['data'] = data
-        ws = create_connection("ws://capnflint.com:9001")
+        ws = create_connection(config.ws_server)
         #logging.debug("Sending Auth: " + config['websocket']['secret'])
         ws.send("AUTH:" + config.websocket_secret)
         #logging.debug("Sending Message: " + json.dumps(message))
